@@ -1,0 +1,84 @@
+✅ Experiment No. 2
+Aim:
+To compare and analyze the performance of different recommendation techniques: content-based, collaborative filtering, and hybrid methods.
+
+Objective:
+To evaluate and understand the effectiveness of various recommendation algorithms using a dataset and identify which method offers the best performance.
+
+📚 Theory
+Recommender systems can be implemented using different algorithms. The three most common techniques are:
+
+1. Collaborative Filtering
+This approach is based on the idea that users who have agreed in the past tend to agree again. It uses user-item interactions (like ratings or views) to predict preferences.
+
+User-based Collaborative Filtering: Recommends items based on the preferences of similar users.
+
+Item-based Collaborative Filtering: Suggests items similar to those the user has already liked.
+
+Strengths: Learns from actual user behavior.
+Weaknesses: Suffers from cold-start and sparsity issues.
+
+2. Content-Based Filtering
+This method recommends items similar to those the user liked, based on item attributes like genre, description, keywords, etc. A user profile is built based on previously liked items.
+
+Strengths: Works well for new users, as it uses item metadata.
+Weaknesses: May produce repetitive suggestions (overspecialization).
+
+3. Hybrid Methods
+Hybrid systems combine both collaborative and content-based methods.
+
+Weighted: Combines the scores from both techniques.
+
+Switching: Switches between methods depending on the user profile.
+
+Feature Augmentation: One method’s output is used as input to another.
+
+Benefits: Improves accuracy, handles cold-start issues better, and ensures diversity.
+
+
+PRogram code:-
+def get_content_based_recommendations(title, df, cosine_sim, top_n=5):
+    idx = df[df['title'] == title].index[0]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n+1]
+    movie_indices = [i[0] for i in sim_scores]
+    return df['title'].iloc[movie_indices].tolist()
+
+def get_collaborative_recommendations(title, df, collab_cosine_sim, top_n=5):
+    idx = df[df['title'] == title].index[0]
+    sim_scores = list(enumerate(collab_cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)[1:top_n+1]
+    movie_indices = [i[0] for i in sim_scores]
+    return df['title'].iloc[movie_indices].tolist()
+
+def get_hybrid_recommendations(title, df, cosine_sim, collab_cosine_sim, top_n=5):
+    content_recs = get_content_based_recommendations(title, df, cosine_sim, top_n)
+    collab_recs = get_collaborative_recommendations(title, df, collab_cosine_sim, top_n)
+    hybrid_recs = list(set(content_recs + collab_recs))
+    return hybrid_recs[:top_n]
+
+def evaluate_recommendation_system(title, df, cosine_sim, collab_cosine_sim):
+    print(f"\nRecommendations for '{title}':")
+    print(f"Content-Based: {get_content_based_recommendations(title, df, cosine_sim)}")
+    print(f"Collaborative Filtering: {get_collaborative_recommendations(title, df, collab_cosine_sim)}")
+    print(f"Hybrid: {get_hybrid_recommendations(title, df, cosine_sim, collab_cosine_sim)}")
+
+# Example usage
+evaluate_recommendation_system('Cars 2', df, cosine_sim, collab_cosine_sim)
+
+OUTPUT SAMPLE;
+
+Recommendations for 'Cars 2':
+Content-Based: ['Cars', 'Planes', 'Turbo', 'Wall-E', 'Ratatouille']
+Collaborative Filtering: ['Cars', 'Ratatouille', 'Wall-E', 'Up', 'Inside Out']
+Hybrid: ['Cars', 'Wall-E', 'Ratatouille', 'Planes', 'Up']
+
+✅ Conclusion
+This experiment demonstrated how different recommendation techniques work and how their results can differ.
+
+Collaborative Filtering depends on user behavior.
+
+Content-Based Filtering leverages item attributes.
+
+Hybrid methods provide the most reliable recommendations by combining the strengths of both.
+This approach enhances personalization, accuracy, and diversity in suggestions.
