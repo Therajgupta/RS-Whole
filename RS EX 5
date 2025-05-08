@@ -1,0 +1,95 @@
+ Experiment No. 5
+Aim:
+To apply Support Vector Machines (SVMs) and Neural Networks (NNs) for classification in a recommender system.
+
+Objective:
+To understand how SVM and Neural Networks can be used to predict user preferences and classify items.
+
+📚 Theory
+Advanced machine learning models like Support Vector Machines (SVMs) and Neural Networks (NNs) are powerful tools for building recommender systems. They help in detecting nonlinear patterns in user-item interactions and improve classification accuracy.
+
+Support Vector Machines (SVMs):
+
+Works by finding the best hyperplane that separates data points of different classes.
+
+Linear SVMs use a straight decision boundary, while Nonlinear SVMs use kernel tricks to handle complex data.
+
+Performs well in high-dimensional spaces.
+
+Neural Networks (NNs):
+
+Modeled after the human brain, consisting of input, hidden, and output layers.
+
+Learns complex patterns by adjusting weights.
+
+Can handle large datasets with multiple features and interactions.
+
+Feedforward, MLP, CNN, RNN, and LSTM are common NN architectures.
+
+These models are especially effective in scenarios where user preferences are subtle or highly nonlinear.
+
+PROGRAM CODE;
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.svm import SVC
+from sklearn.metrics import classification_report, accuracy_score
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense, Dropout
+
+df = pd.read_csv('/content/sample_data/movie_dataset.csv')
+
+# Convert numerical features
+numerical = ['budget', 'popularity', 'runtime', 'vote_average', 'vote_count']
+df[numerical] = df[numerical].apply(pd.to_numeric, errors='coerce')
+df.dropna(inplace=True)
+
+# Binary classification target
+df['label'] = (df['vote_average'] >= 7).astype(int)
+
+# Features and labels
+X = df[numerical]
+y = df['label']
+
+# Scaling
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# SVM
+svm = SVC(kernel='rbf')
+svm.fit(X_train, y_train)
+svm_preds = svm.predict(X_test)
+
+# Neural Network
+input_dim = X_train.shape[1]
+inputs = Input(shape=(input_dim,))
+x = Dense(128, activation='relu')(inputs)
+x = Dropout(0.3)(x)
+x = Dense(64, activation='relu')(x)
+x = Dropout(0.3)(x)
+x = Dense(32, activation='relu')(x)
+outputs = Dense(1, activation='sigmoid')(x)
+
+nn_model = Model(inputs, outputs)
+nn_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+nn_model.fit(X_train, y_train, epochs=5, batch_size=32, verbose=1)
+
+nn_preds = (nn_model.predict(X_test) > 0.5).astype(int)
+Output (Sample)
+Accuracy and classification report for both models.
+
+Neural network shows slightly better generalization in most cases.
+
+✅ Conclusion
+Both SVMs and Neural Networks are effective for classification in recommender systems.
+
+SVM is simpler and works well on smaller datasets.
+
+Neural Networks excel at modeling complex relationships and deliver higher accuracy on larger data.
+Choosing the right model depends on the size and nature of the dataset.
+
+
