@@ -1,0 +1,67 @@
+Experiment No. 6
+Aim:
+To build a content-based recommender system that recommends items based on item similarity.
+
+Objective:
+To implement content-based filtering using text features of products or movies.
+
+📚 Theory
+Content-based filtering uses information about the item itself — such as genre, category, or description — to recommend similar items. It does not rely on other users, making it ideal for new or inactive users.
+
+How it works:
+
+A profile is created for each item using features like product name, category, brand, or description.
+
+The user profile is built by aggregating features of liked items.
+
+TF-IDF is used to vectorize text data.
+
+Cosine similarity is used to measure similarity between items.
+
+Content-based filtering avoids the cold-start problem and is especially useful when item metadata is rich.
+
+PROGRAM CODE;
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
+from sklearn.neighbors import NearestNeighbors
+from difflib import get_close_matches
+
+df = pd.read_csv("/content/sample_data/BigBasket Products.csv")
+df.fillna('', inplace=True)
+
+# Combine features
+df['combined_features'] = df['product'] + ' ' + df['category'] + ' ' + df['sub_category'] + ' ' + df['brand'] + ' ' + df['description']
+
+# TF-IDF
+vectorizer = TfidfVectorizer(stop_words="english")
+tfidf_matrix = vectorizer.fit_transform(df["combined_features"])
+
+# Dimensionality reduction
+svd = TruncatedSVD(n_components=50)
+reduced_matrix = svd.fit_transform(tfidf_matrix)
+
+# Nearest Neighbors model
+nn_model = NearestNeighbors(n_neighbors=11, metric="cosine")
+nn_model.fit(reduced_matrix)
+
+# Recommendation function
+def recommend_product(product_name):
+    matches = get_close_matches(product_name.lower(), df["product"].str.lower(), n=1)
+    if matches:
+        index = df[df["product"].str.lower() == matches[0]].index[0]
+        distances, indices = nn_model.kneighbors([reduced_matrix[index]])
+        return df.iloc[indices[0][1:]][["product", "category", "brand"]]
+    else:
+        return "Product not found."
+
+recommend_product("Water Bottle - Orange")
+
+
+
+Output (Sample)
+Returns a list of 10 products similar to “Water Bottle - Orange” based on content features.
+
+✅ Conclusion
+This content-based recommender system successfully identifies and suggests similar items using textual features. TF-IDF and cosine similarity are effective in calculating item relevance. 
+It is especially beneficial for cold-start scenarios.
