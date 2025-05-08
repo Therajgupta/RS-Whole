@@ -1,0 +1,62 @@
+Experiment No. 3
+Aim:
+To preprocess a dataset for a recommender system, handling missing values, encoding categorical variables, and normalizing ratings.
+
+Objective:
+To prepare a dataset by cleaning and transforming it so it is suitable for training recommendation algorithms.
+
+📚 Theory
+Data preprocessing is a vital step in machine learning. Raw datasets often contain missing values, inconsistencies, and unscaled features, which can degrade model performance. In recommender systems, clean data improves prediction accuracy and ensures robust user-item interactions.
+
+Key steps in preprocessing:
+
+Handling Missing Values: Replace missing numerical values using statistical methods (mean, median). Fill missing categorical values with "Unknown".
+
+Encoding Categorical Variables: Convert non-numeric data into numerical form. Common methods include label encoding and one-hot encoding.
+
+Normalization: Scaling numeric data (e.g., ratings, vote count) helps ensure no single feature dominates others.
+
+Feature Selection: Choosing relevant features like genre, director, and popularity helps improve model efficiency.
+
+Splitting Data: Dividing data into training and testing sets allows better evaluation of the recommendation model.
+
+
+PROGRAM CODE;
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+
+df = pd.read_csv('/content/sample_data/movie_dataset.csv')
+
+# 1. Handle Missing Values
+numerical_cols = ['budget', 'popularity', 'revenue', 'runtime', 'vote_average', 'vote_count']
+df[numerical_cols] = df[numerical_cols].fillna(df[numerical_cols].median())
+
+categorical_cols = ['genres', 'original_language', 'director']
+df[categorical_cols] = df[categorical_cols].fillna('Unknown')
+
+# 2. Encode Categorical Variables
+label_encoders = {}
+for col in categorical_cols:
+    label_encoders[col] = LabelEncoder()
+    df[col] = label_encoders[col].fit_transform(df[col])
+
+# 3. Normalize Ratings
+scaler = MinMaxScaler()
+df[['vote_average', 'vote_count', 'popularity']] = scaler.fit_transform(df[['vote_average', 'vote_count', 'popularity']])
+
+# 4. Feature Selection
+selected_features = ['title', 'genres', 'original_language', 'popularity', 'vote_average', 'vote_count', 'director']
+df_selected = df[selected_features]
+
+# 5. Display Processed Dataset
+print("Processed Dataset (First 15 Rows):")
+print(df_selected.head(15))
+
+Output (Sample)
+Displays the first 15 rows of the cleaned and transformed dataset with scaled values and encoded categories.
+
+
+✅ Conclusion
+Data preprocessing ensures that raw data is cleaned, normalized, and properly formatted.
+Handling missing values, encoding categories, and scaling numeric features helps in building more accurate and efficient recommender models. 
+It is a crucial step before model training.
