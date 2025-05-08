@@ -1,0 +1,67 @@
+ Experiment No. 8
+Aim:
+To develop user profiles using various learning methods and compare their performance in recommending items.
+
+Objective:
+To evaluate machine learning techniques such as KMeans clustering and NMF for profiling users and improving recommendations.
+
+📚 Theory
+In personalized recommendation systems, understanding user behavior is crucial. This is done through user profiling, where we group or model users based on their preferences and interactions.
+
+Two common approaches:
+
+1. KMeans Clustering
+Unsupervised learning algorithm.
+
+Groups users based on their interaction patterns into k clusters.
+
+Users in the same cluster are assumed to have similar preferences.
+
+Evaluation Metrics:
+
+Silhouette Score (higher is better),
+
+Davies-Bouldin Index (lower is better),
+
+Calinski-Harabasz Score (higher is better).
+
+2. Non-negative Matrix Factorization (NMF)
+Factorizes the user-item matrix into two smaller matrices.
+
+Learns latent features representing user interests and item characteristics.
+
+Allows prediction of missing values (e.g., unrated books).
+
+Evaluation Metrics:
+
+MSE, RMSE, Reconstruction Error (lower is better).
+
+PROGRAM CODE
+# Load and clean dataset
+ratings_df = pd.read_excel('Ratings.xlsx')
+books_df = pd.read_excel('Books.xlsx')
+users_df = pd.read_excel('Users.xlsx')
+
+# Merge and pivot
+merged_df = ratings_df.merge(users_df, on='User_id').merge(books_df, on='ISBN')
+user_item_matrix = merged_df.pivot_table(index='User_id', columns='Title', values='Ratings', fill_value=0)
+
+# KMeans
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=5, random_state=42)
+labels = kmeans.fit_predict(user_item_matrix)
+
+# NMF
+from sklearn.decomposition import NMF
+nmf = NMF(n_components=5, init='random', random_state=42)
+W = nmf.fit_transform(user_item_matrix)
+H = nmf.components_
+
+Output (Sample)
+KMeans forms 5 user groups and calculates silhouette and other scores.
+NMF reconstructs the matrix and allows recommendation prediction for unrated items.
+
+ Conclusion
+This experiment shows how user profiles can be developed using clustering (KMeans) and matrix factorization (NMF).
+KMeans helps in grouping similar users, while NMF captures hidden patterns.
+Combining both can lead to better personalization in recommendations.
