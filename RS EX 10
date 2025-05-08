@@ -1,0 +1,109 @@
+Experiment No. 10
+Aim:
+To design and execute user studies to evaluate user satisfaction with recommendations.
+
+Objective:
+To gather and analyze user feedback to assess the effectiveness and quality of recommender systems.
+
+📚 Theory
+User studies are real-time evaluation techniques where users interact with the recommendation system, and feedback is collected to understand satisfaction, trust, and engagement.
+
+Key areas assessed:
+
+Relevance: Were the recommendations meaningful?
+
+Diversity: Did the system show varied content?
+
+Serendipity: Did it suggest something pleasantly surprising?
+
+User Interface (UI): Was the system easy to use?
+
+Methods used:
+
+Surveys and feedback forms
+
+Rating interfaces
+
+A/B testing for comparing models
+
+User studies complement offline evaluations by adding human perception to model effectiveness.
+
+PROGRAM CODE;
+# Experiment 10: User Study Feedback Collector
+import statistics
+
+# List to store feedback from users
+user_feedback = []
+
+def get_feedback():
+    print("\n--- User Feedback Form ---")
+    name = input("Enter your name: ")
+
+    relevance = int(input("Rate the relevance of recommendations (1 to 5): "))
+    diversity = int(input("Rate the diversity of recommendations (1 to 5): "))
+    surprise = int(input("Rate the surprise factor (serendipity) (1 to 5): "))
+    satisfaction = int(input("Rate overall satisfaction (1 to 5): "))
+    comments = input("Any additional comments? ")
+
+    feedback = {
+        "name": name,
+        "relevance": relevance,
+        "diversity": diversity,
+        "surprise": surprise,
+        "satisfaction": satisfaction,
+        "comments": comments
+    }
+
+    user_feedback.append(feedback)
+
+def analyze_feedback():
+    print("\n--- Feedback Summary ---")
+    if not user_feedback:
+        print("No feedback received yet.")
+        return
+
+    avg_relevance = statistics.mean([fb["relevance"] for fb in user_feedback])
+    avg_diversity = statistics.mean([fb["diversity"] for fb in user_feedback])
+    avg_surprise = statistics.mean([fb["surprise"] for fb in user_feedback])
+    avg_satisfaction = statistics.mean([fb["satisfaction"] for fb in user_feedback])
+
+    print(f"Average Relevance Score: {avg_relevance:.2f}/5")
+    print(f"Average Diversity Score: {avg_diversity:.2f}/5")
+    print(f"Average Surprise Score: {avg_surprise:.2f}/5")
+    print(f"Average Satisfaction Score: {avg_satisfaction:.2f}/5")
+
+    print("\nUser Comments:")
+    for fb in user_feedback:
+        print(f"- {fb['name']}: {fb['comments']}")
+
+# Main Program Loop
+while True:
+    print("\n1. Submit Feedback")
+    print("2. View Feedback Summary")
+    print("3. Exit")
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        get_feedback()
+    elif choice == '2':
+        analyze_feedback()
+    elif choice == '3':
+        print("Thank you for participating in the study!")
+        break
+    else:
+        print("Invalid choice. Please try again.")
+
+
+📤 Output (Sample)
+Feedback analysis:
+
+Avg satisfaction score: 4.2/5
+
+80% users found recommendations relevant
+
+70% discovered new favorite items
+
+✅ Conclusion
+User studies provide real-world validation for recommender systems.
+They help assess user experience, perceived accuracy, and usability.
+This feedback loop helps developers improve systems beyond just algorithmic performance.
