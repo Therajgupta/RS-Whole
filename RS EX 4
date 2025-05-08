@@ -1,0 +1,98 @@
+✅ Experiment No. 4
+Aim:
+To implement and evaluate classification methods such as nearest neighbors, decision trees, and rule-based classifiers for a recommender system.
+
+Objective:
+To understand the use of various classification algorithms to predict user preferences and item success.
+
+📚 Theory
+Classification in recommender systems involves categorizing items or users into distinct classes — for example, whether a movie will be a hit or flop. This helps in recommending high-likelihood successful content to users.
+
+Key classification methods:
+
+K-Nearest Neighbors (KNN):
+
+Finds k similar instances based on distance (e.g., Euclidean).
+
+New data points are classified based on the majority vote of nearest neighbors.
+
+Used for binary and multi-class recommendation problems.
+
+Decision Trees:
+
+Uses a tree-like model with decision nodes and leaf nodes.
+
+Splits data based on features like runtime, popularity, etc.
+
+Good for explainability.
+
+Rule-Based Classifiers:
+
+Applies "if-then" rules to make decisions.
+
+Easy to interpret and explain.
+
+Can handle overlapping and partial data coverage.
+
+These classifiers are useful when we need to categorize users or items, and make predictions based on their features.
+
+
+PROGRAM CODE;
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier, export_text
+from sklearn.metrics import classification_report
+
+df = pd.read_csv("/content/sample_data/movie_dataset.csv")
+
+# Define classification target: success = 1 if revenue high and rating > 6.5
+median_revenue = df['revenue'].median()
+df['success'] = np.where((df['revenue'] > median_revenue) & (df['vote_average'] > 6.5), 1, 0)
+
+# Select features
+features = ['budget', 'popularity', 'vote_average', 'vote_count', 'runtime']
+df_selected = df[features + ['success']].dropna()
+
+X = df_selected[features]
+y = df_selected['success']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
+
+# Train models
+knn = KNeighborsClassifier(n_neighbors=5)
+dt = DecisionTreeClassifier(random_state=42)
+rule_based = DecisionTreeClassifier(random_state=42, max_depth=3)
+
+knn.fit(X_train_scaled, y_train)
+dt.fit(X_train_scaled, y_train)
+rule_based.fit(X_train_scaled, y_train)
+
+# Evaluate
+print("KNN:\n", classification_report(y_test, knn.predict(X_test_scaled)))
+print("Decision Tree:\n", classification_report(y_test, dt.predict(X_test_scaled)))
+print("Rule-Based:\n", classification_report(y_test, rule_based.predict(X_test_scaled)))
+
+# Print Rules
+print("Decision Rules:\n", export_text(rule_based, feature_names=features))
+
+📤 Output (Sample)
+Precision, Recall, and F1 scores for each classifier.
+
+A tree diagram-like text output showing rules used by the rule-based classifier.
+✅ Conclusion
+This experiment showed how KNN, decision trees, and rule-based models classify data in recommender systems.
+
+KNN offers high accuracy but is slower on large datasets.
+
+Decision trees are interpretable.
+
+Rule-based models are simple but effective for small feature sets.
+These techniques are essential for classification-based recommendation tasks.
