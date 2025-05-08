@@ -1,0 +1,52 @@
+Experiment No. 7
+Aim:
+To analyze how different item representation methods impact the quality of recommendations.
+
+Objective:
+To compare collaborative, content-based, and hybrid representations for improved recommendations.
+
+📚 Theory
+Item representation affects how well a recommender system can understand and match user preferences. Common methods include:
+
+Collaborative Filtering: Based on interaction history.
+
+Content-Based Filtering: Based on metadata or descriptions.
+
+Hybrid Methods: Combine both for improved accuracy.
+
+Evaluation is done using metrics like Precision, Recall, F1-score, NDCG, and RMSE. A hybrid system generally offers better performance by combining multiple perspectives on user preferences.
+
+💻 Program Code (Summary)
+Load book data (Books.xlsx, Ratings.xlsx).
+
+Use TF-IDF for content-based similarity.
+
+Use SVD from the surprise library for collaborative filtering.
+
+Create a hybrid model by averaging both scores.
+
+Evaluate with metrics (NDCG, F1, etc.).
+
+PROGRAM CODE;
+
+# Content-based
+content_sim = cosine_similarity(tfidf_matrix)
+
+# Collaborative
+model = SVD()
+model.fit(trainset)
+predictions = model.test(testset)
+
+# Hybrid
+hybrid_scores = 0.5 * content_scores + 0.5 * collaborative_scores
+
+Output (Sample)
+Content-based: recommends books based on description.
+
+Collaborative: recommends based on user similarity.
+
+Hybrid: combines both and performs best.
+
+✅ Conclusion
+Different item representation methods yield different outcomes. Hybrid systems provide the best performance by leveraging the strengths of both collaborative and content-based systems. 
+Proper representation leads to better, more diverse recommendations.
