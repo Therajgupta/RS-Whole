@@ -1,0 +1,55 @@
+Experiment No. 9
+Aim:
+To conduct offline experiments to evaluate the performance of recommendation algorithms using historical interaction data.
+
+Objective:
+To assess recommendation models using historical user-item interactions with offline metrics.
+
+📚 Theory
+Offline evaluation simulates the recommendation process using historical data instead of live user feedback. This allows us to compare multiple algorithms before deployment.
+
+Common algorithms:
+
+SVD (matrix factorization)
+
+KNNBasic (user/item similarity)
+
+NMF
+
+Evaluation Metrics:
+
+RMSE and MAE: Measure prediction accuracy.
+
+Precision, Recall, MAP@K: Evaluate recommendation quality.
+
+NDCG: Considers the position of relevant items.
+
+Offline experiments are cost-effective and reproducible, making them essential in early development stages.
+
+PROGRAM CODE;
+from surprise import Dataset, Reader, SVD, KNNBasic, NMF
+from surprise.model_selection import cross_validate
+
+reader = Reader(rating_scale=(0, 10))
+data = Dataset.load_from_df(ratings_df[['User_id', 'ISBN', 'Ratings']], reader)
+
+# SVD
+svd = SVD()
+cross_validate(svd, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
+
+# KNN
+knn = KNNBasic()
+cross_validate(knn, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
+
+# NMF
+nmf = NMF()
+cross_validate(nmf, data, measures=['RMSE', 'MAE'], cv=5, verbose=True)
+
+
+📤 Output (Sample)
+Displays RMSE and MAE for all models across 5-fold cross-validation. You can compare which model is most accurate.
+
+✅ Conclusion
+Offline experiments are a reliable method to compare recommendation models before live deployment.
+SVD and NMF generally provide better accuracy than simple KNN.
+Choosing the right model depends on dataset structure, error tolerance, and complexity.
